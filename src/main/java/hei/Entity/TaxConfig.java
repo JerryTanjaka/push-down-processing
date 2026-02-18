@@ -1,5 +1,6 @@
 package hei.Entity;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class TaxConfig {
 
@@ -37,5 +38,26 @@ public class TaxConfig {
 
     public void setRate(BigDecimal rate) {
         this.rate = rate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        TaxConfig taxConfig = (TaxConfig) o;
+        return id == taxConfig.id && Objects.equals(label, taxConfig.label) && Objects.equals(rate, taxConfig.rate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, label, rate);
+    }
+
+    @Override
+    public String toString() {
+        return "TaxConfig{" +
+                "id=" + id +
+                ", label='" + label + '\'' +
+                ", rate=" + rate +
+                '}';
     }
 }

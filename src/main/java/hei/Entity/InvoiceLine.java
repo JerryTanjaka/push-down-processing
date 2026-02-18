@@ -1,5 +1,5 @@
 package hei.Entity;
-import java.math.BigDecimal;
+import java.util.Objects;
 
 public class InvoiceLine {
 
@@ -7,11 +7,11 @@ public class InvoiceLine {
     private int invoiceId;
     private String label;
     private int quantity;
-    private BigDecimal unitPrice;
+    private Double unitPrice;
 
     public InvoiceLine() {}
 
-    public InvoiceLine(int id, int invoiceId, String label, int quantity, BigDecimal unitPrice) {
+    public InvoiceLine(int id, int invoiceId, String label, int quantity, Double unitPrice) {
         this.id = id;
         this.invoiceId = invoiceId;
         this.label = label;
@@ -35,7 +35,7 @@ public class InvoiceLine {
         return quantity;
     }
 
-    public BigDecimal getUnitPrice() {
+    public Double getUnitPrice() {
         return unitPrice;
     }
 
@@ -55,7 +55,30 @@ public class InvoiceLine {
         this.quantity = quantity;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
+    public void setUnitPrice(Double unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        InvoiceLine that = (InvoiceLine) o;
+        return id == that.id && invoiceId == that.invoiceId && quantity == that.quantity && Objects.equals(label, that.label) && Objects.equals(unitPrice, that.unitPrice);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, invoiceId, label, quantity, unitPrice);
+    }
+
+    @Override
+    public String toString() {
+        return "InvoiceLine{" +
+                "id=" + id +
+                ", invoiceId=" + invoiceId +
+                ", label='" + label + '\'' +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                '}';
     }
 }

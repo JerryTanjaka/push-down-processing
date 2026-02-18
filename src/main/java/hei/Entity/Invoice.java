@@ -1,4 +1,7 @@
 package hei.Entity;
+
+import java.util.Objects;
+
 public class Invoice {
 
     private int id;
@@ -35,5 +38,26 @@ public class Invoice {
 
     public void setStatus(InvoiceStatus status) {
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Invoice invoice = (Invoice) o;
+        return id == invoice.id && Objects.equals(customerName, invoice.customerName) && status == invoice.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, customerName, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Invoice{" +
+                "customerName='" + customerName + '\'' +
+                ", id=" + id +
+                ", status=" + status +
+                '}';
     }
 }

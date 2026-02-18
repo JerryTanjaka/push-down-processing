@@ -1,5 +1,4 @@
 package hei.Entity;
-import java.math.BigDecimal;
 import java.util.Objects;
 
 public class InvoiceTotal {
@@ -7,11 +6,11 @@ public class InvoiceTotal {
     private int invoiceId;
     private String customerName;
     private InvoiceStatus status;
-    private BigDecimal total;
+    private Double total;
 
     public InvoiceTotal() {}
 
-    public InvoiceTotal(int invoiceId, String customerName, InvoiceStatus status, BigDecimal total) {
+    public InvoiceTotal(int invoiceId, String customerName, InvoiceStatus status, Double total) {
         this.invoiceId = invoiceId;
         this.customerName = customerName;
         this.status = status;
@@ -30,7 +29,7 @@ public class InvoiceTotal {
         return status;
     }
 
-    public BigDecimal getTotal() {
+    public Double getTotal() {
         return total;
     }
 
@@ -46,7 +45,7 @@ public class InvoiceTotal {
         this.status = status;
     }
 
-    public void setTotal(BigDecimal total) {
+    public void setTotal(Double total) {
         this.total = total;
     }
 
@@ -60,5 +59,15 @@ public class InvoiceTotal {
     @Override
     public int hashCode() {
         return Objects.hash(invoiceId, customerName, status, total);
+    }
+
+    @Override
+    public String toString() {
+        return "InvoiceTotal{" +
+                "customerName='" + customerName + '\'' +
+                ", invoiceId=" + invoiceId +
+                ", status=" + status +
+                ", total=" + total +
+                '}';
     }
 }

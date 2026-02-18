@@ -37,3 +37,8 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+###ignore the dotenv
+.env
+
+./src/main/resources/restartData.sql

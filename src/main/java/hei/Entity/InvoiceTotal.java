@@ -1,5 +1,6 @@
 package hei.Entity;
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class InvoiceTotal {
 
@@ -47,5 +48,17 @@ public class InvoiceTotal {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        InvoiceTotal that = (InvoiceTotal) o;
+        return invoiceId == that.invoiceId && Objects.equals(customerName, that.customerName) && status == that.status && Objects.equals(total, that.total);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(invoiceId, customerName, status, total);
     }
 }

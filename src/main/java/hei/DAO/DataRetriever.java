@@ -2,6 +2,7 @@ package hei.DAO;
 
 import hei.Entity.InvoiceStatus;
 import hei.Entity.InvoiceStatusTotals;
+import hei.Entity.InvoiceTaxSummary;
 import hei.Entity.InvoiceTotal;
 import hei.util.DBConnection;
 
@@ -142,4 +143,66 @@ public class DataRetriever {
         }
         return null;
     }
+    public List<InvoiceTaxSummary> findInvoiceTaxSummaries() {
+        List<InvoiceTaxSummary> results = new ArrayList<>();
+
+        String sql = """
+        SELECT
+            i.id AS invoice_id,
+            SUM(il.quantity * il.unit_price) AS ht,
+            SUM(il.quantity * il.unit_price) * (tc.rate / 100) AS tva,
+            SUM(il.quantity * il.unit_price) * (1 + tc.rate / 100) AS ttc
+        FROM invoice i
+        JOIN invoice_line il ON il.invoice_id = i.id
+        CROSS JOIN tax_config tc -- on suppose un seul taux
+        GROUP BY i.id
+        ORDER BY i.id
+    """;
+
+        try (Connection conn = new DBConnection().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                InvoiceTaxSummary summary = new InvoiceTaxSummary();
+                      summary.setInvoiceId( rs.getInt("invoice_id"));
+                      summary.setHT( rs.getDouble("ht"));
+                      summary.setTVA(  rs.getDouble("tva"));
+                      summary.setTTC(  rs.getDouble("ttc"));
+                results.add(summary);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return results;
+    }
+    public BigDecimal computeWeightedTurnoverTtc() {
+        String sql = """
+        SELECT
+            SUM(
+                CASE
+                    WHEN i.status = 'CONFIRMED' THEN il.quantity * il.unit_price * 0.5 * (1 + tc.rate / 100)
+                    WHEN i.status = 'PAID' THEN il.quantity * il.unit_price * (1 + tc.rate / 100)
+                    ELSE 0
+                END
+            ) AS weighted_turnover_ttc
+        FROM invoice i
+        JOIN invoice_line il ON il.invoice_id = i.id
+        CROSS JOIN tax_config tc
+    """;
+
+        try (Connection conn = new DBConnection().getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getBigDecimal("weighted_turnover_ttc");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return BigDecimal.ZERO;
+    }
+
 }
